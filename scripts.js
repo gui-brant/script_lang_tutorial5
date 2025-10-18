@@ -1,49 +1,49 @@
-let nextPlayer = 'X'; // takes a value of either 'X' or 'O' according to the game turns
+let nextPlayer = 'X'; // 'X' or 'O'
 
-//initalize the game by setting the value inside next-lbl to nextPlayer
-//hint: you could use innerText for this 
+// initialize the game by setting the value inside next-lbl to nextPlayer
+document.getElementById('next-lbl').innerText = nextPlayer;
 
-//This call will create the buttons needed for the gameboard.
-createGameBoard()
+// This call will create the buttons needed for the gameboard.
+createGameBoard();
 
-function createGameBoard()
-{
-    // Programatically add a button with square brackets enclosing an empty space to each cell in the gameboard
-   
+function createGameBoard() {
+    // Programatically add a button "[ ]" to each cell c1..c9
+    for (let i = 1; i <= 9; i++) {
+        const cell = document.getElementById(`c${i}`);
+        cell.innerHTML = '<button>[ ]</button>';
+    }
 
-    // Programatically add 'takeCell' as an event listener to all the buttons on the board
-    let btns = document.querySelectorAll('button');
-
-    for (let i=0; i<btns.length; i++)
-    {
-        /*
-            Assign an event listener to each of the buttons in btns.
-            The event to listen for should be 'click'. You will need to pass 
-            the event to takeCell. Review the slides for the trick on how to ]
-            pass a parameter.
-        */
+    // Add 'takeCell' as an event listener to all board buttons
+    const btns = document.querySelectorAll('#gameboard button');
+    for (let i = 0; i < btns.length; i++) {
+        // Use { once: true } so each button can be clicked only once
+        btns[i].addEventListener('click', takeCell, { once: true });
     }
 }
 
-// This function will be used to respond to a click event on any of the board buttons.
-function takeCell(event)
-{
-    /*
-        When the button is clicked, the space inside its square brackets is replaced by the value in the nextPlayer before switching it
-    */
+// Respond to a click on any board button
+function takeCell(event) {
+    const btn = event.currentTarget;
 
-    // Make sure the button is clickable only once (I didn't mention how to do that, look it up :) )
+    // Fill the space inside the brackets with nextPlayer, e.g. "[X]" or "[O]"
+    btn.innerText = `[${nextPlayer}]`;
+
+    // Make sure the button is no longer clickable
+    btn.disabled = true;
+
+    // Switch player and update the label
+    nextPlayer = (nextPlayer === 'X') ? 'O' : 'X';
+    document.getElementById('next-lbl').innerText = nextPlayer;
 
     // Check if the game is over
-    if (isGameOver())
-    {
-        // let the label with the id 'game-over-lbl' display the words 'Game Over' inside <h1> element
+    if (isGameOver()) {
+        // Display 'Game Over' inside an <h1> element
+        document.getElementById('game-over-lbl').innerHTML = '<h1>Game Over</h1>';
     }
-
-    // I'll leave declaring the winner for your intrinsic motivation, it's not required for this assignment 
 }
 
-function isGameOver()
-{
-    // This function returns true if all the buttons are disabled and false otherwise 
+function isGameOver() {
+    // Return true if all the buttons on the board are disabled
+    const btns = document.querySelectorAll('#gameboard button');
+    return Array.from(btns).every(btn => btn.disabled);
 }
